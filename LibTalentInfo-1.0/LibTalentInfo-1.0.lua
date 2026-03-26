@@ -21,12 +21,13 @@ if LibStub == nil then
 end
 
 --- @class LibTalentInfo-1.0
-local LibTalentInfo = LibStub:NewLibrary("LibTalentInfo-1.0", 13)
+local LibTalentInfo = LibStub:NewLibrary("LibTalentInfo-1.0", 14)
 if LibTalentInfo == nil then
 	return
 end
 
 --- @class LibTalentInfo-1.0.Provider
+--- @field public build integer
 --- @field public classes string[]
 --- @field public specializations { [string]: { [integer]: LibTalentInfo-1.0.Specialization } }
 --- @field public talents { [unknown]: LibTalentInfo-1.0.Talent[] }
@@ -46,8 +47,8 @@ end
 function LibTalentInfo:SetProvider(provider)
 	assert(type(provider) == "table", "bad argument #1: expected table, got " .. type(provider))
 
-	if self.provider ~= nil then
-		error("Cannot register multiple talent providers registered")
+	if self.provider ~= nil and provider.build <= self.provider.build then
+		return
 	end
 
 	self.provider = provider
