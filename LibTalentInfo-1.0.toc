@@ -1,4 +1,4 @@
-## Interface: 120000, 50503, 40402, 11508
+## Interface: 120007, 50504, 40402, 20506, 11509
 ## Title: Lib: TalentInfo-1.0
 ## Author: Snakybo
 ## LoadOnDemand: 1
