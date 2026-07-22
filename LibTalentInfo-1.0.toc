@@ -21,4 +21,4 @@
 
 Libs.xml
 
-LibTalentInfo-1.0.xml
+LibTalentInfo-1.0\LibTalentInfo-1.0.xml
