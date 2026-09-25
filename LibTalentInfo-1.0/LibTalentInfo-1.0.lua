@@ -271,7 +271,7 @@ function LibTalentInfo:GetSpecializationsInternal(classFileName)
 
 	local specializations = self.provider.specializations[classFileName]
 	if specializations == nil then
-		error("Cannot get specializations for unknown class '" .. classFileName .. "'")
+		return {}
 	end
 
 	return specializations
@@ -289,7 +289,7 @@ function LibTalentInfo:GetTalentsInternal(specIdOrClassFileName)
 
 	local talents = self.provider.talents[specIdOrClassFileName]
 	if talents == nil then
-		error("Cannot get talents for unknown specialization or class '" .. specIdOrClassFileName .. "'")
+		return {}
 	end
 
 	return talents
@@ -307,7 +307,7 @@ function LibTalentInfo:GetPvpTalentsInternal(specIdOrClassFileName)
 
 	local talents = self.provider.pvpTalents[specIdOrClassFileName]
 	if talents == nil then
-		error("Cannot get PvP talents for unknown specialization or class '" .. specIdOrClassFileName .. "'")
+		return {}
 	end
 
 	return talents
