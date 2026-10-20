@@ -1,0 +1,10 @@
+{
+	"addonRoot": true,
+	"library": ["LibStub/"],
+	"diagnostics": {
+		"enable": ["need-check-nil"]
+	},
+	"globals": {
+		"read": ["LibStub"]
+	}
+}
