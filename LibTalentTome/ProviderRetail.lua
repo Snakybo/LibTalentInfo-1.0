@@ -20,16 +20,16 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 -- SOFTWARE.
 
-local LibTalentInfo = LibStub and LibStub("LibTalentInfo-1.0", true)
+local LibTalentTome = LibStub and LibStub("LibTalentTome", true)
 
 local interfaceVersion = select(4, GetBuildInfo())
 
-if LibTalentInfo == nil or interfaceVersion < 120000 or interfaceVersion >= 130000 then
+if LibTalentTome == nil or interfaceVersion < 120000 or interfaceVersion >= 130000 then
 	return
 end
 
---- @type LibTalentInfo-1.0.Provider
-LibTalentInfo:SetProvider({
+--- @type LibTalentTome.Provider
+LibTalentTome:SetProvider({
 	build = 68914,
 	classes = {
 		"DEATHKNIGHT",

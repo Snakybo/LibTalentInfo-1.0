@@ -21,34 +21,34 @@
 -- SOFTWARE.
 
 if LibStub == nil then
-	error("LibTalentInfo-1.0 requires LibStub")
+	error("LibTalentTome requires LibStub")
 end
 
---- @class LibTalentInfo-1.0
-local LibTalentInfo = LibStub:NewLibrary("LibTalentInfo-1.0", 14)
-if LibTalentInfo == nil then
+--- @class LibTalentTome
+local LibTalentTome = LibStub:NewLibrary("LibTalentTome", 1)
+if LibTalentTome == nil then
 	return
 end
 
---- @class LibTalentInfo-1.0.Provider
+--- @class LibTalentTome.Provider
 --- @field public build integer
 --- @field public classes string[]
---- @field public specializations { [string]: { [integer]: LibTalentInfo-1.0.Specialization } }
---- @field public talents { [unknown]: LibTalentInfo-1.0.Talent[] }
---- @field public pvpTalents { [unknown]: LibTalentInfo-1.0.Talent[] }
+--- @field public specializations { [string]: { [integer]: LibTalentTome.Specialization } }
+--- @field public talents { [unknown]: LibTalentTome.Talent[] }
+--- @field public pvpTalents { [unknown]: LibTalentTome.Talent[] }
 
---- @class LibTalentInfo-1.0.Specialization
+--- @class LibTalentTome.Specialization
 --- @field public id integer
 --- @field public name? string
 --- @field public icon? integer
 
---- @class LibTalentInfo-1.0.Talent
+--- @class LibTalentTome.Talent
 --- @field public id integer
 --- @field public name string
 --- @field public icon integer
 
---- @param provider LibTalentInfo-1.0.Provider
-function LibTalentInfo:SetProvider(provider)
+--- @param provider LibTalentTome.Provider
+function LibTalentTome:SetProvider(provider)
 	assert(type(provider) == "table", "bad argument #1: expected table, got " .. type(provider))
 
 	if self.provider ~= nil and provider.build <= self.provider.build then
@@ -61,14 +61,14 @@ end
 --- Get the number of classes available in the game.
 ---
 --- @return integer
-function LibTalentInfo:GetNumClasses()
+function LibTalentTome:GetNumClasses()
 	return #self:GetClassesInternal()
 end
 
 --- Get the unique identifier of all available classes.
 ---
 --- @return string[]
-function LibTalentInfo:GetClasses()
+function LibTalentTome:GetClasses()
 	return CopyTable(self:GetClassesInternal())
 end
 
@@ -76,7 +76,7 @@ end
 ---
 --- @param classFileName string
 --- @return integer
-function LibTalentInfo:GetNumSpecializations(classFileName)
+function LibTalentTome:GetNumSpecializations(classFileName)
 	local specializations = self:GetSpecializationsInternal(classFileName)
 	local result = 0
 
@@ -90,16 +90,16 @@ end
 --- Get all available specializations for the given class.
 ---
 --- @param classFileName string
---- @return { [integer]: LibTalentInfo-1.0.Specialization }
-function LibTalentInfo:GetSpecializations(classFileName)
+--- @return { [integer]: LibTalentTome.Specialization }
+function LibTalentTome:GetSpecializations(classFileName)
 	return CopyTable(self:GetSpecializationsInternal(classFileName))
 end
 
 --- Get the specialization at the given index, for the given class.
 ---
 --- @param classFileName string
---- @return LibTalentInfo-1.0.Specialization
-function LibTalentInfo:GetSpecializationAt(classFileName, index)
+--- @return LibTalentTome.Specialization
+function LibTalentTome:GetSpecializationAt(classFileName, index)
 	assert(type(index) == "number", "bad argument #2: expected number, got " .. type(index))
 
 	local specializations = self:GetSpecializationsInternal(classFileName)
@@ -114,8 +114,8 @@ end
 --- Get the specialization with the given ID, for the given class.
 ---
 --- @param classFileName string
---- @return LibTalentInfo-1.0.Specialization
-function LibTalentInfo:GetSpecializataionById(classFileName, id)
+--- @return LibTalentTome.Specialization
+function LibTalentTome:GetSpecializationById(classFileName, id)
 	assert(type(id) == "number", "bad argument #2: expected number, got " .. type(id))
 
 	local specializations = self:GetSpecializationsInternal(classFileName)
@@ -126,7 +126,7 @@ function LibTalentInfo:GetSpecializataionById(classFileName, id)
 		end
 	end
 
-	error("Cannot get unknown talent with ID " .. id)
+	error("Cannot get unknown specialization with ID " .. id)
 end
 
 --- Get the number of talents available for the given key.
@@ -136,7 +136,7 @@ end
 ---
 --- @param key integer|string
 --- @return integer
-function LibTalentInfo:GetNumTalents(key)
+function LibTalentTome:GetNumTalents(key)
 	return #self:GetTalentsInternal(key)
 end
 
@@ -146,8 +146,8 @@ end
 --- specialization ID, otherwise (read: Classic Era), the key should be a class ID.
 ---
 --- @param key integer|string
---- @return LibTalentInfo-1.0.Talent[]
-function LibTalentInfo:GetTalents(key)
+--- @return LibTalentTome.Talent[]
+function LibTalentTome:GetTalents(key)
 	return CopyTable(self:GetTalentsInternal(key))
 end
 
@@ -157,8 +157,8 @@ end
 --- specialization ID, otherwise (read: Classic Era), the key should be a class ID.
 ---
 --- @param key integer|string
---- @return LibTalentInfo-1.0.Talent
-function LibTalentInfo:GetTalentAt(key, index)
+--- @return LibTalentTome.Talent
+function LibTalentTome:GetTalentAt(key, index)
 	assert(type(index) == "number", "bad argument #2: expected number, got " .. type(index))
 
 	local talents = self:GetTalentsInternal(key)
@@ -176,8 +176,8 @@ end
 --- specialization ID, otherwise (read: Classic Era), the key should be a class ID.
 ---
 --- @param key integer|string
---- @return LibTalentInfo-1.0.Talent
-function LibTalentInfo:GetTalentById(key, id)
+--- @return LibTalentTome.Talent
+function LibTalentTome:GetTalentById(key, id)
 	assert(type(id) == "number", "bad argument #2: expected number, got " .. type(id))
 
 	local talents = self:GetTalentsInternal(key)
@@ -198,7 +198,7 @@ end
 ---
 --- @param key integer|string
 --- @return integer
-function LibTalentInfo:GetNumPvpTalents(key)
+function LibTalentTome:GetNumPvpTalents(key)
 	return #self:GetPvpTalentsInternal(key)
 end
 
@@ -208,8 +208,8 @@ end
 --- specialization ID, otherwise (read: Classic Era), the key should be a class ID.
 ---
 --- @param key integer|string
---- @return LibTalentInfo-1.0.Talent[]
-function LibTalentInfo:GetPvpTalents(key)
+--- @return LibTalentTome.Talent[]
+function LibTalentTome:GetPvpTalents(key)
 	return CopyTable(self:GetPvpTalentsInternal(key))
 end
 
@@ -219,8 +219,8 @@ end
 --- specialization ID, otherwise (read: Classic Era), the key should be a class ID.
 ---
 --- @param key integer|string
---- @return LibTalentInfo-1.0.Talent
-function LibTalentInfo:GetPvpTalentAt(key, index)
+--- @return LibTalentTome.Talent
+function LibTalentTome:GetPvpTalentAt(key, index)
 	assert(type(index) == "number", "bad argument #2: expected number, got " .. type(index))
 
 	local talents = self:GetPvpTalentsInternal(key)
@@ -238,8 +238,8 @@ end
 --- specialization ID, otherwise (read: Classic Era), the key should be a class ID.
 ---
 --- @param key integer|string
---- @return LibTalentInfo-1.0.Talent
-function LibTalentInfo:GetPvpTalentById(key, id)
+--- @return LibTalentTome.Talent
+function LibTalentTome:GetPvpTalentById(key, id)
 	assert(type(id) == "number", "bad argument #2: expected number, got " .. type(id))
 
 	local talents = self:GetPvpTalentsInternal(key)
@@ -255,7 +255,7 @@ end
 
 --- @private
 --- @return string[]
-function LibTalentInfo:GetClassesInternal()
+function LibTalentTome:GetClassesInternal()
 	if self.provider == nil then
 		error("No talent provider registered, register one first using 'SetProvider'.")
 	end
@@ -265,8 +265,8 @@ end
 
 --- @private
 --- @param classFileName string
---- @return { [integer]: LibTalentInfo-1.0.Specialization }
-function LibTalentInfo:GetSpecializationsInternal(classFileName)
+--- @return { [integer]: LibTalentTome.Specialization }
+function LibTalentTome:GetSpecializationsInternal(classFileName)
 	assert(type(classFileName) == "string", "bad argument #1: expected string, got " .. type(classFileName))
 
 	if self.provider == nil then
@@ -283,8 +283,8 @@ end
 
 --- @private
 --- @param specIdOrClassFileName integer|string
---- @return LibTalentInfo-1.0.Talent[]
-function LibTalentInfo:GetTalentsInternal(specIdOrClassFileName)
+--- @return LibTalentTome.Talent[]
+function LibTalentTome:GetTalentsInternal(specIdOrClassFileName)
 	assert(tContains({"number", "string"}, type(specIdOrClassFileName)), "bad argument #1: expected number or string, got " .. type(specIdOrClassFileName))
 
 	if self.provider == nil then
@@ -301,8 +301,8 @@ end
 
 --- @private
 --- @param specIdOrClassFileName integer|string
---- @return LibTalentInfo-1.0.Talent[]
-function LibTalentInfo:GetPvpTalentsInternal(specIdOrClassFileName)
+--- @return LibTalentTome.Talent[]
+function LibTalentTome:GetPvpTalentsInternal(specIdOrClassFileName)
 	assert(tContains({"number", "string"}, type(specIdOrClassFileName)), "bad argument #1: expected number or string, got " .. type(specIdOrClassFileName))
 
 	if self.provider == nil then

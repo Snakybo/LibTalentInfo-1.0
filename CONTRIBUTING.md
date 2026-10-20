@@ -19,4 +19,4 @@ After the data has been fully populated, download the [Talent Parser](https://gi
 
 Copy the `TalentExtractor.lua` data file from your `WTF/Account/YOUR ACCOUNT/SavedVariables` folder into the same folder as the Python script.
 
-When you run the script a new `TalentDataRetail.lua` file will be generated, this file is fully compatible with LibTalentInfo and can be directly copied into this library.
+When you run the script a new `Provider[Game].lua` file will be generated, this file is fully compatible with LibTalentTome and can be directly copied into this library.

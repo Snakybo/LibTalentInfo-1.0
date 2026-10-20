@@ -1,5 +1,5 @@
 ## Interface: 120100, 50504, 40402, 20506, 16001, 11509
-## Title: Lib: TalentInfo-1.0
+## Title: Lib: TalentTome
 ## Author: Snakybo
 ## LoadOnDemand: 1
 ## Notes: A library which provides class, specialization, talent, and PvP talent information for any class or specialization.
@@ -15,10 +15,10 @@
 ## Category-ruRU: Библиотеки
 ## Category-zhCN: 函数库
 ## Category-zhTW: 函式庫
-## X-Website: https://github.com/Snakybo/LibTalentInfo-1.0
+## X-Website: https://github.com/Snakybo/LibTalentTome
 ## X-Curse-Project-ID: 417044
-## X-Github: https://github.com/Snakybo/LibTalentInfo-1.0
+## X-Github: https://github.com/Snakybo/LibTalentTome
 
 Libs.xml
 
-LibTalentInfo-1.0\LibTalentInfo-1.0.xml
+LibTalentTome\LibTalentTome.xml

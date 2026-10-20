@@ -25,6 +25,6 @@ jobs:
       uses: actions/upload-artifact@v7
       if: success()
       with:
-        name: LibTalentInfo-1.0
+        name: LibTalentTome
         path: .release/
         include-hidden-files: true
