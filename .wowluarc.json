@@ -1,6 +1,6 @@
 {
 	"addonRoot": true,
-	"library": ["LibStub/"],
+	"library": ["Libs/"],
 	"diagnostics": {
 		"enable": ["need-check-nil"]
 	},

@@ -1,4 +1,3 @@
-package-as: LibTalentInfo-1.0
 enable-nolib-creation: no
 
 ignore:
@@ -10,4 +9,4 @@ ignore:
   - README.md
 
 externals:
-  LibStub: https://repos.curseforge.com/wow/libstub/trunk
+  Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
