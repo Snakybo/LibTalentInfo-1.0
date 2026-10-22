@@ -1,8 +1,8 @@
-## Interface: 120100, 50504, 40402, 20506, 16001, 11509
+## Interface: 120100, 50504, 20506, 16001, 11509
 ## Title: Lib: TalentTome
 ## Author: Snakybo
 ## LoadOnDemand: 1
-## Notes: A library which provides class, specialization, talent, and PvP talent information for any class or specialization.
+## Notes: A library which provides race, class, specialization, talent, and PvP talent information.
 ## Version: @project-version@
 ## Category-enUS: Libraries
 ## Category-deDE: Bibliotheken
