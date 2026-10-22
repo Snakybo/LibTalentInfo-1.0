@@ -6,6 +6,7 @@ This library depends on the following other libraries, they are not included in 
 by downloading a recent release, and copying the libraries into your repository.
 
 * [LibStub](https://www.wowace.com/projects/libstub)
+* [CallbackHandler-1.0](https://www.wowace.com/projects/callbackhandler)
 
 ## Data updates
 

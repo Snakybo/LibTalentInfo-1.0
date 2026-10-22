@@ -30,6 +30,7 @@ end
 --- @type LibTalentTome.Provider
 LibTalentTome:SetProvider({
 	build = 70531,
+	talentSystem = "tiers",
 	races = {
 		[1] = "Human",
 		[2] = "Orc",

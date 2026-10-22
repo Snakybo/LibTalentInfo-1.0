@@ -19,10 +19,17 @@ Currently only one limtation is known, the `GetTalentById` API does not work on 
 
 ## Getting started
 
+### Dependencies
+
+* [LibStub](https://www.wowace.com/projects/libstub)
+* [CallbackHandler-1.0](https://www.wowace.com/projects/callbackhandler)
+
 ### Embedding
 
 ```yaml
 externals:
+  Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
+  Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
   Libs/LibTalentTome:
     url: https://github.com/Snakybo/LibTalentTome
 
@@ -30,7 +37,7 @@ move-folders:
   <ADDON>/Libs/LibTalentTome/LibTalentTome: <ADDON>/Libs/LibTalentTome
 ```
 
-Replace `<ADDON>` for your addon name, and simply add `Libs\LibTalentTome\LibTalentTome.xml` to your TOC file.
+Replace `<ADDON>` for your addon name, and simply add the libraries to your TOC file.
 
 ### Usage
 
@@ -50,6 +57,30 @@ for _, class in ipairs(LibTalentTome:GetClasses()) do
 		end
 	end
 end
+```
+
+See [API.md](API.md) for additional documentation.
+
+## Active talents
+
+In addition to static data about talent trees, the library also exposes currently active talents for the player, updated automatically.
+
+There are a few API surfaces available to retrieve this information, or a callback function to receive when they change.
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+
+LibTalentTome.RegisterCallback(MyAddon, "ActiveTalentsChanged", function(event, talents)
+	for _, talent in ipairs(talents) do
+		print(talent.id, talent.spellId, talent.name, talent.icon, talent.rank)
+	end
+end)
+
+LibTalentTome.RegisterCallback(MyAddon, "ActivePvpTalentsChanged", function(event, talents)
+	for _, talent in ipairs(talents) do
+		print(talent.id, talent.spellId, talent.name, talent.icon, talent.rank)
+	end
+end)
 ```
 
 See [API.md](API.md) for additional documentation.

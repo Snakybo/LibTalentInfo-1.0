@@ -4,9 +4,10 @@
 local LibTalentTome = LibStub("LibTalentTome")
 ```
 
-* All functions are called with `:` syntax.
+* All functions are called with `:` syntax, except for the [callback](#callbacks) functions.
 * Returned tables are copies, so they are safe to modify.
 * Names (race, class, specialization, talent) are localized to the client's locale.
+* Requires [LibStub](https://www.curseforge.com/wow/addons/libstub) and [CallbackHandler-1.0](https://www.curseforge.com/wow/addons/callbackhandler) to be loaded first.
 
 ## Contents
 
@@ -17,6 +18,8 @@ local LibTalentTome = LibStub("LibTalentTome")
 * [Specializations](#specializations)
 * [Talents](#talents)
 * [PvP talents](#pvp-talents)
+* [Active talents](#active-talents)
+* [Callbacks](#callbacks)
 * [Providers](#providers)
 
 ## Data availability
@@ -26,13 +29,15 @@ local LibTalentTome = LibStub("LibTalentTome")
 | Retail                          | Yes   | Yes     | Yes             | Yes     | Yes         | Yes            |
 | Mists of Pandaria Classic       | Yes   | Yes     | Yes             | Yes     |             |                |
 | The Burning Crusade Anniversary | Yes   | Yes     | Yes             | Yes     |             |                |
-| Forever                         | Yes   | Yes     | Yes             | Yes     |             |                |
+| Forever                         | Yes   | Yes     | Yes             | Yes     |             | Yes            |
 | Classic Era                     | Yes   | Yes     | Yes             | Yes     |             |                |
 
 On game versions that use `C_Traits`, talents are read from the game at runtime instead of being bundled with the library. This has two consequences:
 
 * [`GetTalentById`](#gettalentbyid) is not supported and raises an error.
-* The talent `id` is the talent's spell ID.
+* The talent `id` is the talent's `C_Traits` entry ID.
+
+The player's [active talents](#active-talents) are available on all game versions. The player's active PvP talents are only available on game versions that have PvP talents.
 
 ## Types
 
@@ -73,6 +78,18 @@ Used for both talents and PvP talents.
 | `spellId` | `integer` | The spell ID associated with the talent.      |
 | `icon`    | `integer` | The icon representing the talent.             |
 | `name`    | `string`  | The localized name of the talent.             |
+
+### LibTalentTome.ActiveTalent
+
+A [`LibTalentTome.Talent`](#libtalenttometalent) that the player has selected. Used for both talents and PvP talents. PvP talents always have a `rank` of `1`.
+
+| Field     | Type      | Description                              |
+| --------- | --------- | ---------------------------------------- |
+| `id`      | `integer` | The unique identifier for the talent.    |
+| `spellId` | `integer` | The spell ID associated with the talent. |
+| `icon`    | `integer` | The icon representing the talent.        |
+| `name`    | `string`  | The localized name of the talent.        |
+| `rank`    | `integer` | The current rank of the talent.          |
 
 ## Races
 
@@ -473,6 +490,212 @@ local talent = LibTalentTome:GetPvpTalentById(3529)
 print(talent.spellId, talent.name)
 ```
 
+## Active talents
+
+The library keeps track of the talents and PvP talents the player has selected (the active talents), and updates them automatically when they change. Use the [callbacks](#callbacks) to be notified of changes.
+
+* Talent changes that have not been applied yet, such as unsaved changes in the talent UI, are not included.
+* On game versions that use `C_Traits`, only talents from the active hero talent tree are included.
+* The lists are empty until the player's talents have been loaded, which happens shortly after login, or shortly after the library is loaded if the player is already logged in.
+
+### GetActiveTalents
+
+```lua
+LibTalentTome:GetActiveTalents(): LibTalentTome.ActiveTalent[]
+```
+
+Get the talents the player has currently selected.
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+
+for _, talent in ipairs(LibTalentTome:GetActiveTalents()) do
+	print(talent.id, talent.name, talent.rank)
+end
+```
+
+### GetActivePvpTalents
+
+```lua
+LibTalentTome:GetActivePvpTalents(): LibTalentTome.ActiveTalent[]
+```
+
+Get the PvP talents the player has currently selected. Always returns an empty table on game versions without PvP talents.
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+
+for _, talent in ipairs(LibTalentTome:GetActivePvpTalents()) do
+	print(talent.id, talent.name)
+end
+```
+
+### GetActiveTalentById
+
+```lua
+LibTalentTome:GetActiveTalentById(talentId: integer): LibTalentTome.ActiveTalent?
+```
+
+Get the active talent with the given ID. Returns `nil` if the player doesn't have a talent with that ID selected.
+
+On game versions that use `C_Traits`, the ID is the talent's `C_Traits` entry ID (see [Data availability](#data-availability)).
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+local talent = LibTalentTome:GetActiveTalentById(23)
+
+if talent ~= nil then
+	print(talent.name, talent.rank)
+end
+```
+
+### GetActivePvpTalentById
+
+```lua
+LibTalentTome:GetActivePvpTalentById(talentId: integer): LibTalentTome.ActiveTalent?
+```
+
+Get the active PvP talent with the given ID. Returns `nil` if the player doesn't have a PvP talent with that ID selected, or on game versions without PvP talents.
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+local talent = LibTalentTome:GetActivePvpTalentById(3529)
+
+if talent ~= nil then
+	print(talent.name)
+end
+```
+
+### GetActiveTalentByName
+
+```lua
+LibTalentTome:GetActiveTalentByName(name: string): LibTalentTome.ActiveTalent?
+```
+
+Get the active talent with the given name. Returns `nil` if the player doesn't have a talent with that name selected.
+
+The name is the localized talent name and must match exactly, see [`LibTalentTome.Talent`](#libtalenttometalent).
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+local talent = LibTalentTome:GetActiveTalentByName("Improved Heroic Strike")
+
+if talent ~= nil then
+	print(talent.id, talent.rank)
+end
+```
+
+### GetActivePvpTalentByName
+
+```lua
+LibTalentTome:GetActivePvpTalentByName(name: string): LibTalentTome.ActiveTalent?
+```
+
+Get the active PvP talent with the given name. Returns `nil` if the player doesn't have a PvP talent with that name selected, or on game versions without PvP talents.
+
+The name is the localized talent name and must match exactly, see [`LibTalentTome.Talent`](#libtalenttometalent).
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+local talent = LibTalentTome:GetActivePvpTalentByName("Disarm")
+
+if talent ~= nil then
+	print(talent.id)
+end
+```
+
+## Callbacks
+
+Callbacks are provided by [CallbackHandler-1.0](https://www.curseforge.com/wow/addons/callbackhandler).
+
+> [!IMPORTANT]
+> Unlike the rest of the API, the callback functions are called with `.` syntax. The first argument is the object that owns the callback, not the library. Calling them with `:` registers the library itself as the owner.
+
+### RegisterCallback
+
+```lua
+LibTalentTome.RegisterCallback(owner: table, event: string, method?: string|function, arg?: any)
+```
+
+Register a callback for the given event.
+
+* If `method` is a function, it is called as `method(event, ...)`, or as `method(arg, event, ...)` if `arg` is given.
+* If `method` is a string, or omitted, `owner[method]` is called as `owner:method(event, ...)`. When omitted, `method` defaults to the event name.
+
+Registering the same owner for the same event again replaces the previous callback.
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+local MyAddon = {}
+
+-- Using a function
+LibTalentTome.RegisterCallback(MyAddon, "ActiveTalentsChanged", function(event, talents)
+	print(event, #talents)
+end)
+
+-- Using a method, calls MyAddon:ActivePvpTalentsChanged(event, talents)
+function MyAddon:ActivePvpTalentsChanged(event, talents)
+	print(event, #talents)
+end
+
+LibTalentTome.RegisterCallback(MyAddon, "ActivePvpTalentsChanged")
+```
+
+### UnregisterCallback
+
+```lua
+LibTalentTome.UnregisterCallback(owner: table, event: string)
+```
+
+Unregister the callback the owner registered for the given event.
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+LibTalentTome.UnregisterCallback(MyAddon, "ActiveTalentsChanged")
+```
+
+### UnregisterAllCallbacks
+
+```lua
+LibTalentTome.UnregisterAllCallbacks(owner: table)
+```
+
+Unregister all callbacks registered by the owner.
+
+#### Example
+
+```lua
+local LibTalentTome = LibStub("LibTalentTome")
+LibTalentTome.UnregisterAllCallbacks(MyAddon)
+```
+
+### Events
+
+| Event                     | Arguments                                                | Description                                                 |
+| ------------------------- | -------------------------------------------------------- | ----------------------------------------------------------- |
+| `ActiveTalentsChanged`    | `event: string, talents: LibTalentTome.ActiveTalent[]`   | Fired when the player's selected talents change.            |
+| `ActivePvpTalentsChanged` | `event: string, talents: LibTalentTome.ActiveTalent[]`   | Fired when the player's selected PvP talents change.        |
+
+* Events are only fired when a talent is added, removed, or changes rank, not for every game event that may affect talents.
+* Events are also fired when the player's talents are first loaded, unless the player has no talents selected.
+* The `talents` table is shared between all callbacks of the same event, so it should not be modified. Use [`GetActiveTalents`](#getactivetalents) or [`GetActivePvpTalents`](#getactivepvptalents) to get a copy that is safe to modify.
+
 ## Providers
 
 The data for each game version is supplied by a provider. The bundled providers register themselves automatically, so you generally don't need to use this.
@@ -485,7 +708,7 @@ LibTalentTome:SetProvider(provider: LibTalentTome.Provider)
 
 Set the data provider for the library, generally only used internally by the bundled providers.
 
-The provider is only replaced if `provider.build` is greater than the build of the current provider. Replacing the provider clears all cached data.
+The provider is only replaced if `provider.build` is greater than the build of the current provider. Replacing the provider clears all cached data, and registers the game events used to keep track of the [active talents](#active-talents) for the provider's `talentSystem`.
 
 #### Example
 
@@ -494,6 +717,7 @@ local LibTalentTome = LibStub("LibTalentTome")
 LibTalentTome:SetProvider({
 	-- Must be higher than the build of the currently registered provider, or this call is ignored.
 	build = 80000,
+	talentSystem = "traits",
 	races = { [1] = "Human" },
 	classes = { ["WARRIOR"] = 1 },
 	specializations = {
@@ -511,10 +735,19 @@ LibTalentTome:SetProvider({
 | Field             | Type                                                                | Description                                                                          |
 | ----------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `build`           | `integer`                                                           | The data build. A provider with a higher build replaces one with a lower build.      |
+| `talentSystem`    | `LibTalentTome.TalentSystem`                                        | The talent system used by the game version, see below.                               |
 | `races`           | `table<integer, string>`                                            | Race ID to `clientFileString`.                                                       |
 | `classes`         | `table<string, integer>`                                            | `classFileName` to class ID.                                                         |
 | `specializations` | `table<integer, table<integer, LibTalentTome.SpecializationId>>`    | Class ID to specializations, keyed by specialization index.                          |
 | `talents`         | `table<integer, LibTalentTome.TalentId[]>`                          | Specialization ID to talents. Unused on game versions that use `C_Traits`.           |
 | `pvpTalents`      | `table<integer, LibTalentTome.TalentId[]>`                          | Specialization ID to PvP talents.                                                    |
+
+`LibTalentTome.TalentSystem` is one of:
+
+| Value      | Description                                                                         | Game versions                                      |
+| ---------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `"traits"` | Talent trees using the `C_Traits` API.                                              | Retail, Forever                                    |
+| `"tiers"`  | One talent per tier, selected from a row of columns.                                | Mists of Pandaria Classic                          |
+| `"tabs"`   | Talent trees per tab, where points are spent into talents with one or more ranks.   | The Burning Crusade Anniversary, Classic Era       |
 
 `LibTalentTome.SpecializationId` and `LibTalentTome.TalentId` are the same as [`LibTalentTome.Specialization`](#libtalenttomespecialization) and [`LibTalentTome.Talent`](#libtalenttometalent), without the localized `name` field.
